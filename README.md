@@ -4,11 +4,11 @@ A simple online code editor built with React, allowing users to write, run, and 
 
 ## Features
 
-- Multi-language Support: Write and run code in JavaScript and TypeScript.
-- File Management: Create, delete, and manage files and folders.
-- Local Storage: Save your code and project structure locally in the browser.
-- Output Display: View console logs and output directly in the app.
-- Theme Switcher: Toggle between light and dark themes for better readability.
+- **Multi-language Support**: Write and run code in JavaScript and TypeScript.
+- **File Management**: Create, delete, and manage files and folders.
+- **Local Storage**: Save your code and project structure locally in the browser.
+- **Output Display**: View console logs and output directly in the app.
+- **Theme Switcher**: Toggle between light and dark themes for better readability.
 
 ## Technologies Used
 
@@ -33,18 +33,14 @@ A simple online code editor built with React, allowing users to write, run, and 
    Install the dependencies:
 
 2. Install the dependencies:
-
-    bash
-    Copy code
     npm install
-    # or
+    or
     yarn install
 3. Start the development server:
 
-    bash
-    Copy code
+ 
     npm start
-    # or
+    or
     yarn start
 4. Open your browser and navigate to http://localhost:3000
 
