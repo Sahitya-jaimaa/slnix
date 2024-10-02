@@ -26,7 +26,7 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
       <h2 className="font-bold text-lg">Files</h2>
       <button
         onClick={onNewFolder}
-        className="mb-2 px-2 py-1 bg-blue-500 text-white rounded"
+        className="mb-2 mr-2 px-2 py-1 bg-blue-500 text-white rounded"
       >
         New Folder
       </button>

@@ -13,17 +13,6 @@ const languages: Language[] = [
 ];
 
 const App: React.FC = () => {
-  const languages = [
-    {
-      langCode: "JS",
-      langName: "JavaScript",
-    },
-    {
-      langCode: "TS",
-      langName: "TypeScript",
-    },
-    // More languages can be added here
-  ];
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(
     languages[0]
   );
@@ -144,11 +133,15 @@ const App: React.FC = () => {
       setOutput(""); // Clear previous output
       const runCode = new Function(code);
       runCode();
-
       localStorage.setItem(`${currentFolder}/${currentFile}`, code);
-    } catch (error) {
-      console.error("Error running code:", error);
-      setOutput("Error running code: " + error.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("Error running code:", err);
+        setOutput("Error running code: " + err.message);
+      } else {
+        console.error("Unknown error:", err);
+        setOutput("An unknown error occurred.");
+      }
     } finally {
       console.log = originalConsoleLog; // Restore original console log
     }
@@ -187,14 +180,14 @@ const App: React.FC = () => {
     <div
       className={`flex flex-col h-screen transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"}`}
     >
-      <div className="flex justify-between items-center p-4">
-        <div className="flex items-center">
+      <div className="flex justify-between items-center p-4 flex-wrap">
+        <div className="flex items-center flex-grow">
           <img src={logo} alt="Logo" className="h-12 w-12 mr-2" />
           <h1 className="text-2xl font-bold text-center flex-grow">
             Code Editor
           </h1>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center mt-2 sm:mt-0">
           <LanguageSelector
             languages={languages}
             selectedLanguage={selectedLanguage}
@@ -216,26 +209,26 @@ const App: React.FC = () => {
           onDeleteFolder={handleDeleteFolder}
         />
         <div
-          className={`flex-1 p-6 overflow-y-auto ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}
+          className={`flex-1 p-4 md:p-6 overflow-y-auto ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}
         >
           <h2 className="text-xl font-semibold mb-4">Edit Your Code</h2>
           {error && <div className="text-red-500">{error}</div>}
-          <div className="flex space-x-4 mb-4">
+          <div className="flex flex-col md:flex-row space-x-0 md:space-x-4 mb-4">
             <button
               onClick={handleSaveCode}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="flex-1 px-4 py-2 bg-blue-500 text-white rounded mb-2 md:mb-0 md:mr-2"
             >
               Save
             </button>
             <button
               onClick={handleResetCode}
-              className="px-4 py-2 bg-red-500 text-white rounded"
+              className="flex-1 px-4 py-2 bg-red-500 text-white rounded mb-2 md:mb-0 md:mr-2"
             >
               Reset
             </button>
             <button
               onClick={handleRunCode}
-              className={`px-4 py-2 ${isLanguageEnabled() ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"} text-white rounded`}
+              className={`flex-1 px-4 py-2 ${isLanguageEnabled() ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"} text-white rounded`}
               disabled={!isLanguageEnabled()}
             >
               Run Code

@@ -18,7 +18,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   fileName,
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const [formattedCode, setFormattedCode] = useState(code);
+  const [formattedCode, setFormattedCode] = useState<string>(code);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.ctrlKey && e.key === "s") {
@@ -34,20 +34,24 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     }
   };
 
-  const formatCode = () => {
-    const formatted = prettier.format(code, {
-      parser: "babel",
-      plugins: [parserBabel],
-    });
-    setFormattedCode(formatted);
-    onCodeChange(formatted);
+  const formatCode = async () => {
+    try {
+      const formatted = await prettier.format(code, {
+        parser: "babel",
+        plugins: [parserBabel],
+      });
+      setFormattedCode(formatted);
+      onCodeChange(formatted);
+    } catch (error) {
+      console.error("Error formatting code:", error);
+    }
   };
 
   useEffect(() => {
     const textArea = textAreaRef.current;
     if (textArea) {
       textArea.value = code;
-      setFormattedCode(code); // Update formatted code when input changes
+      setFormattedCode(code);
     }
   }, [code]);
 
@@ -59,8 +63,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           className="w-full h-full p-4 bg-transparent text-gray-900 dark:text-gray-100 border-none resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={code}
           onChange={(e) => {
-            onCodeChange(e.target.value);
-            setFormattedCode(e.target.value);
+            const newCode = e.target.value;
+            onCodeChange(newCode);
+            setFormattedCode(newCode);
           }}
           onKeyDown={handleKeyDown}
         />
@@ -73,7 +78,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       </div>
       <div className="w-1/3 bg-gray-200 dark:bg-gray-700 p-4 overflow-auto">
         <h3 className="font-bold mb-2">Formatted Code</h3>
-        {/* Displaying syntax highlighted code */}
         <SyntaxHighlighter language="javascript" style={solarizedlight}>
           {formattedCode}
         </SyntaxHighlighter>

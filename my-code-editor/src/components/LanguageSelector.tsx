@@ -10,6 +10,7 @@ interface LanguageSelectorProps {
   selectedLanguage: Language;
   onSelectLanguage: (language: Language) => void;
   className?: string;
+  style?: React.CSSProperties; // Add this line
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
@@ -17,6 +18,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   selectedLanguage,
   onSelectLanguage,
   className,
+  style, // Add this line
 }) => {
   return (
     <select
@@ -27,6 +29,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           languages.find((lang) => lang.langCode === e.target.value)!
         )
       }
+      style={style} // Use the style prop here
     >
       {languages.map((language) => (
         <option key={language.langCode} value={language.langCode}>
