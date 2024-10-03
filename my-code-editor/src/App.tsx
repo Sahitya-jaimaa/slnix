@@ -114,7 +114,7 @@ const App: React.FC = () => {
     const originalConsoleLog = console.log;
     console.log = (...args: any[]) => {
       setOutput((prevOutput) => prevOutput + args.join(" ") + "\n");
-      originalConsoleLog(...args); // Retain the original console log functionality
+      originalConsoleLog(...args);
     };
 
     try {
@@ -171,7 +171,9 @@ const App: React.FC = () => {
 
   return (
     <div
-      className={`flex flex-col h-screen transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"}`}
+      className={`flex flex-col h-screen transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"
+      }`}
     >
       <div className="flex justify-between items-center p-4 flex-wrap">
         <div className="flex items-center flex-grow">
@@ -202,7 +204,9 @@ const App: React.FC = () => {
           onDeleteFolder={handleDeleteFolder}
         />
         <div
-          className={`flex-1 p-4 md:p-6 overflow-y-auto ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}
+          className={`flex-1 p-4 md:p-6 overflow-y-auto ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+          }`}
         >
           <h2 className="text-xl font-semibold mb-4">Edit Your Code</h2>
           {error && <div className="text-red-500">{error}</div>}
@@ -235,15 +239,23 @@ const App: React.FC = () => {
         </div>
       </div>
       <div
-        className={`p-6 border-t ${isDarkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-200 text-gray-800"}`}
+        className={`p-6 border-t ${
+          isDarkMode
+            ? "bg-gray-700 border-gray-600 text-white"
+            : "bg-white border-gray-200 text-gray-800"
+        }`}
       >
         <h3
-          className={`font-bold text-lg border-b mb-4 ${isDarkMode ? "border-gray-500" : "border-gray-300"}`}
+          className={`font-bold text-lg border-b mb-4 ${
+            isDarkMode ? "border-gray-500" : "border-gray-300"
+          }`}
         >
           Output:
         </h3>
         <div
-          className={`overflow-auto h-48 rounded-lg shadow-lg ${isDarkMode ? "bg-gray-600 text-white" : "bg-gray-100 text-gray-800"} p-4 border`}
+          className={`overflow-auto h-48 rounded-lg shadow-lg ${
+            isDarkMode ? "bg-gray-600 text-white" : "bg-gray-100 text-gray-800"
+          } p-4 border`}
         >
           <pre className="whitespace-pre-wrap">
             {output || "No output to display."}
