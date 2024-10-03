@@ -1,0 +1,56 @@
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f0f0f0;
+}
+
+.code-editor {
+  flex: 1;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  resize: none;
+  background: transparent;
+  white-space: pre-wrap; /* Preserve whitespace */
+  overflow: auto;
+}
+
+.highlighted-code {
+  flex: 1;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 16px;
+  background: white;
+  white-space: pre-wrap; /* Preserve whitespace */
+  overflow: auto;
+  border: 1px solid #ccc;
+  display: none; /* Hide this since we're merging both */
+}
+
+.keyword {
+  color: blue;
+  font-weight: bold;
+}
+
+.string {
+  color: green;
+}
+
+.number {
+  color: orange;
+}
+
+.run-button {
+  margin-top: 10px;
+  padding: 10px;
+  background: blue;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.run-button:hover {
+  background: darkblue;
+}

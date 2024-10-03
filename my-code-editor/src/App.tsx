@@ -108,7 +108,17 @@ const App: React.FC = () => {
   };
 
   const handleRunCode = () => {
-    if (!currentFile) return;
+    if (!currentFile) {
+      alert("Please save your file before running the code.");
+      return;
+    }
+
+    // Check if the code is saved
+    const savedCode = localStorage.getItem(`${currentFolder}/${currentFile}`);
+    if (!savedCode) {
+      alert("Please save your file before running the code.");
+      return;
+    }
 
     // Capture console output
     const originalConsoleLog = console.log;
@@ -235,7 +245,7 @@ const App: React.FC = () => {
             onCodeChange={handleCodeChange}
             onRunCode={handleRunCode}
             fileName={currentFile || "untitled"}
-            selectedLanguage={selectedLanguage} // Pass the selected language here
+            selectedLanguage={selectedLanguage}
           />
         </div>
       </div>
