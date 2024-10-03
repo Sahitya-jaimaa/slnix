@@ -3,13 +3,13 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import prettier from "prettier/standalone";
 import parserBabel from "prettier/parser-babel";
-import parserHtml from "prettier/parser-html";
 
 interface CodeEditorProps {
   code: string;
   onCodeChange: (code: string) => void;
   onRunCode: (code: string) => void;
   fileName: string;
+  selectedLanguage: { langCode: string; langName: string }; // Add selectedLanguage prop
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
@@ -17,6 +17,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   onCodeChange,
   onRunCode,
   fileName,
+  selectedLanguage,
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [formattedCode, setFormattedCode] = useState<string>(code);
@@ -25,8 +26,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     if (e.ctrlKey && e.key === "s") {
       e.preventDefault();
       const codeData = {
-        langCode: "JS",
-        code: btoa(code),
+        langCode: selectedLanguage.langCode, // Use the selected language code
+        code: btoa(code), // Encode code in base64
         lines: code.split("\n").length,
         size: `${(new Blob([code]).size / 1024).toFixed(2)}kb`,
       };
@@ -37,10 +38,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
   const formatCode = async () => {
     try {
-      const parser = fileName.endsWith(".html") ? "html" : "babel";
       const formatted = await prettier.format(code, {
-        parser,
-        plugins: [parserBabel, parserHtml],
+        parser: "babel",
+        plugins: [parserBabel],
       });
       setFormattedCode(formatted);
       onCodeChange(formatted);
@@ -80,7 +80,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       </div>
       <div className="w-1/3 bg-gray-200 dark:bg-gray-700 p-4 overflow-auto">
         <h3 className="font-bold mb-2">Formatted Code</h3>
-        <SyntaxHighlighter language="html" style={solarizedlight}>
+        <SyntaxHighlighter language="javascript" style={solarizedlight}>
           {typeof formattedCode === "string" ? formattedCode : ""}
         </SyntaxHighlighter>
         <button

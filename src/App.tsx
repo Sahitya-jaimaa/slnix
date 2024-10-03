@@ -155,7 +155,7 @@ const App: React.FC = () => {
       localStorage.setItem(`${currentFolder}/${currentFile}`, code);
       alert("Code saved!");
     } else {
-      alert("No file selected to save.");
+      alert("Select the file to be saved.");
     }
   };
 
@@ -235,6 +235,7 @@ const App: React.FC = () => {
             onCodeChange={handleCodeChange}
             onRunCode={handleRunCode}
             fileName={currentFile || "untitled"}
+            selectedLanguage={selectedLanguage} // Pass the selected language here
           />
         </div>
       </div>
