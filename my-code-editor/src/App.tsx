@@ -258,7 +258,7 @@ const App: React.FC = () => {
           } p-4 border`}
         >
           <pre className="whitespace-pre-wrap">
-            {output || "No output to display."}
+            {output || "Output to be displayed."}
           </pre>
         </div>
       </div>
