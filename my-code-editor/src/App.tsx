@@ -10,6 +10,8 @@ import logo from "./assets/images/logo.png"; // Adjust the path as needed
 const languages: Language[] = [
   { langCode: "JS", langName: "JavaScript" },
   { langCode: "TS", langName: "TypeScript" },
+  { langCode: "HTML", langName: "HTML" },
+  { langCode: "CSS", langName: "CSS" },
 ];
 
 const App: React.FC = () => {
@@ -41,11 +43,9 @@ const App: React.FC = () => {
       return;
     }
 
-    const newFileName = prompt(
-      "Enter file name (with .js, .jsx, .ts, or .tsx extension):"
-    );
+    const newFileName = prompt("Enter file name (with appropriate extension):");
     if (newFileName) {
-      const validExtensions = [".js", ".jsx", ".ts", ".tsx"];
+      const validExtensions = [".js", ".jsx", ".ts", ".tsx", ".html", ".css"];
       const isValidExtension = validExtensions.some((ext) =>
         newFileName.endsWith(ext)
       );
@@ -58,7 +58,9 @@ const App: React.FC = () => {
         setCode("");
         setError(null);
       } else {
-        setError("Invalid file extension. Please use .js, .jsx, .ts, or .tsx.");
+        setError(
+          "Invalid file extension. Please use .js, .jsx, .ts, .tsx, .html, or .css."
+        );
       }
     }
   };
@@ -108,20 +110,6 @@ const App: React.FC = () => {
   const handleRunCode = () => {
     if (!currentFile) return;
 
-    const selectedLanguageCode = selectedLanguage.langCode;
-
-    if (
-      (selectedLanguageCode === "TS" &&
-        !currentFile.endsWith(".ts") &&
-        !currentFile.endsWith(".tsx")) ||
-      (selectedLanguageCode === "JS" &&
-        !currentFile.endsWith(".js") &&
-        !currentFile.endsWith(".jsx"))
-    ) {
-      setError("Selected language does not match the file extension.");
-      return;
-    }
-
     // Capture console output
     const originalConsoleLog = console.log;
     console.log = (...args: any[]) => {
@@ -131,8 +119,23 @@ const App: React.FC = () => {
 
     try {
       setOutput(""); // Clear previous output
-      const runCode = new Function(code);
-      runCode();
+
+      if (selectedLanguage.langCode === "HTML") {
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(code);
+          newWindow.document.close();
+          newWindow.focus();
+        }
+      } else if (selectedLanguage.langCode === "CSS") {
+        const styleElement = document.createElement("style");
+        styleElement.textContent = code;
+        document.head.appendChild(styleElement);
+      } else {
+        const runCode = new Function(code);
+        runCode();
+      }
+
       localStorage.setItem(`${currentFolder}/${currentFile}`, code);
     } catch (err) {
       if (err instanceof Error) {
@@ -164,16 +167,6 @@ const App: React.FC = () => {
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
     document.body.classList.toggle("dark");
-  };
-
-  const isLanguageEnabled = () => {
-    const selectedLanguageCode = selectedLanguage.langCode;
-    if (!currentFile) return false;
-
-    return (
-      (selectedLanguageCode === "TS" && currentFile.endsWith(".ts")) ||
-      (selectedLanguageCode === "JS" && currentFile.endsWith(".js"))
-    );
   };
 
   return (
@@ -228,8 +221,7 @@ const App: React.FC = () => {
             </button>
             <button
               onClick={handleRunCode}
-              className={`flex-1 px-4 py-2 ${isLanguageEnabled() ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"} text-white rounded`}
-              disabled={!isLanguageEnabled()}
+              className="flex-1 px-4 py-2 bg-green-500 text-white rounded"
             >
               Run Code
             </button>
