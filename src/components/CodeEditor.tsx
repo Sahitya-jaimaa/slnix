@@ -3,6 +3,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import prettier from "prettier/standalone";
 import parserBabel from "prettier/parser-babel";
+import parserHtml from "prettier/parser-html";
 
 interface CodeEditorProps {
   code: string;
@@ -36,9 +37,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
   const formatCode = async () => {
     try {
+      const parser = fileName.endsWith(".html") ? "html" : "babel";
       const formatted = await prettier.format(code, {
-        parser: "babel",
-        plugins: [parserBabel],
+        parser,
+        plugins: [parserBabel, parserHtml],
       });
       setFormattedCode(formatted);
       onCodeChange(formatted);
@@ -78,8 +80,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       </div>
       <div className="w-1/3 bg-gray-200 dark:bg-gray-700 p-4 overflow-auto">
         <h3 className="font-bold mb-2">Formatted Code</h3>
-        <SyntaxHighlighter language="javascript" style={solarizedlight}>
-          {formattedCode}
+        <SyntaxHighlighter language="html" style={solarizedlight}>
+          {typeof formattedCode === "string" ? formattedCode : ""}
         </SyntaxHighlighter>
         <button
           onClick={() => onRunCode(formattedCode)}

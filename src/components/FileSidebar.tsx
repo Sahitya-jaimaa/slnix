@@ -40,7 +40,7 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
       )}
       <div>
         {Object.keys(folders).length === 0 ? (
-          <p>No folders available.</p>
+          <p>Create new folder.</p>
         ) : (
           Object.keys(folders).map((folder) => (
             <div key={folder} className="mb-4">

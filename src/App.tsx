@@ -10,6 +10,8 @@ import logo from "./assets/images/logo.png"; // Adjust the path as needed
 const languages: Language[] = [
   { langCode: "JS", langName: "JavaScript" },
   { langCode: "TS", langName: "TypeScript" },
+  { langCode: "HTML", langName: "HTML" },
+  { langCode: "CSS", langName: "CSS" },
 ];
 
 const App: React.FC = () => {
@@ -41,11 +43,9 @@ const App: React.FC = () => {
       return;
     }
 
-    const newFileName = prompt(
-      "Enter file name (with .js, .jsx, .ts, or .tsx extension):"
-    );
+    const newFileName = prompt("Enter file name (with appropriate extension):");
     if (newFileName) {
-      const validExtensions = [".js", ".jsx", ".ts", ".tsx"];
+      const validExtensions = [".js", ".jsx", ".ts", ".tsx", ".html", ".css"];
       const isValidExtension = validExtensions.some((ext) =>
         newFileName.endsWith(ext)
       );
@@ -58,7 +58,9 @@ const App: React.FC = () => {
         setCode("");
         setError(null);
       } else {
-        setError("Invalid file extension. Please use .js, .jsx, .ts, or .tsx.");
+        setError(
+          "Invalid file extension. Please use .js, .jsx, .ts, .tsx, .html, or .css."
+        );
       }
     }
   };
@@ -108,31 +110,32 @@ const App: React.FC = () => {
   const handleRunCode = () => {
     if (!currentFile) return;
 
-    const selectedLanguageCode = selectedLanguage.langCode;
-
-    if (
-      (selectedLanguageCode === "TS" &&
-        !currentFile.endsWith(".ts") &&
-        !currentFile.endsWith(".tsx")) ||
-      (selectedLanguageCode === "JS" &&
-        !currentFile.endsWith(".js") &&
-        !currentFile.endsWith(".jsx"))
-    ) {
-      setError("Selected language does not match the file extension.");
-      return;
-    }
-
     // Capture console output
     const originalConsoleLog = console.log;
     console.log = (...args: any[]) => {
       setOutput((prevOutput) => prevOutput + args.join(" ") + "\n");
-      originalConsoleLog(...args); // Retain the original console log functionality
+      originalConsoleLog(...args);
     };
 
     try {
       setOutput(""); // Clear previous output
-      const runCode = new Function(code);
-      runCode();
+
+      if (selectedLanguage.langCode === "HTML") {
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(code);
+          newWindow.document.close();
+          newWindow.focus();
+        }
+      } else if (selectedLanguage.langCode === "CSS") {
+        const styleElement = document.createElement("style");
+        styleElement.textContent = code;
+        document.head.appendChild(styleElement);
+      } else {
+        const runCode = new Function(code);
+        runCode();
+      }
+
       localStorage.setItem(`${currentFolder}/${currentFile}`, code);
     } catch (err) {
       if (err instanceof Error) {
@@ -166,19 +169,11 @@ const App: React.FC = () => {
     document.body.classList.toggle("dark");
   };
 
-  const isLanguageEnabled = () => {
-    const selectedLanguageCode = selectedLanguage.langCode;
-    if (!currentFile) return false;
-
-    return (
-      (selectedLanguageCode === "TS" && currentFile.endsWith(".ts")) ||
-      (selectedLanguageCode === "JS" && currentFile.endsWith(".js"))
-    );
-  };
-
   return (
     <div
-      className={`flex flex-col h-screen transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"}`}
+      className={`flex flex-col h-screen transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"
+      }`}
     >
       <div className="flex justify-between items-center p-4 flex-wrap">
         <div className="flex items-center flex-grow">
@@ -209,7 +204,9 @@ const App: React.FC = () => {
           onDeleteFolder={handleDeleteFolder}
         />
         <div
-          className={`flex-1 p-4 md:p-6 overflow-y-auto ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}
+          className={`flex-1 p-4 md:p-6 overflow-y-auto ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+          }`}
         >
           <h2 className="text-xl font-semibold mb-4">Edit Your Code</h2>
           {error && <div className="text-red-500">{error}</div>}
@@ -228,8 +225,7 @@ const App: React.FC = () => {
             </button>
             <button
               onClick={handleRunCode}
-              className={`flex-1 px-4 py-2 ${isLanguageEnabled() ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"} text-white rounded`}
-              disabled={!isLanguageEnabled()}
+              className="flex-1 px-4 py-2 bg-green-500 text-white rounded"
             >
               Run Code
             </button>
@@ -243,18 +239,26 @@ const App: React.FC = () => {
         </div>
       </div>
       <div
-        className={`p-6 border-t ${isDarkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-200 text-gray-800"}`}
+        className={`p-6 border-t ${
+          isDarkMode
+            ? "bg-gray-700 border-gray-600 text-white"
+            : "bg-white border-gray-200 text-gray-800"
+        }`}
       >
         <h3
-          className={`font-bold text-lg border-b mb-4 ${isDarkMode ? "border-gray-500" : "border-gray-300"}`}
+          className={`font-bold text-lg border-b mb-4 ${
+            isDarkMode ? "border-gray-500" : "border-gray-300"
+          }`}
         >
           Output:
         </h3>
         <div
-          className={`overflow-auto h-48 rounded-lg shadow-lg ${isDarkMode ? "bg-gray-600 text-white" : "bg-gray-100 text-gray-800"} p-4 border`}
+          className={`overflow-auto h-48 rounded-lg shadow-lg ${
+            isDarkMode ? "bg-gray-600 text-white" : "bg-gray-100 text-gray-800"
+          } p-4 border`}
         >
           <pre className="whitespace-pre-wrap">
-            {output || "No output to display."}
+            {output || "Output to be displayed."}
           </pre>
         </div>
       </div>
